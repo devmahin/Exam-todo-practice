@@ -82,7 +82,6 @@ searchInput.addEventListener("input", (e) => {
 
 
 ///pagination
-const pagenation = document.querySelector("#pagenation")
 const paginationalltodo = document.querySelectorAll("#alltodo tr")
 
 let record_per_page = 5;
@@ -103,17 +102,27 @@ pageRecord()
     }
 
     function genaretPage (){
-        // let prevBtn = `<li class="page-item" id="prevBtn"><a class="page-link" onclick="prevBtn()" href="#">Previous</a></li>`
-        // let nextBtn =  `<li class="page-item" id="nextBtn"><a class="page-link" onclick="nextBtn()" href="#">Next</a></li>`
-        // buttons += `<li class="page-item daynamc ${activeClass}" id="page${i}"><a class="page-link" href="#">${i}</a></li>`
-       
-        // pagenation.innerHTML = `${prevBtn}, ${buttons}, ${nextBtn}`
+        let prevBtn = `<li class="page-item" id="prevBtn"><a class="page-link" onclick="prevBtn()" href="#">Previous</a></li>`
+        let nextBtn =  `<li class="page-item" id="nextBtn"><a class="page-link" onclick="nextBtn()" href="#">Next</a></li>`
+        let buttons = '';
+        let activeClass = "";
+        for(i = 1; i <= total_page; i++){
+            
+            if(i =1){
+                activeClass  = "active";
+            }else{
+                activeClass = "";
+            }
+            buttons += `<li class="page-item ${activeClass}"><a class="page-link" href="#">${i}</a></li>`
+        }
+        const pagenation = document.querySelector("#pagenation")
+        pagenation.innerHTML = `${prevBtn}, ${buttons}, ${nextBtn}`
     }
-    // function nextBtn (){
-    //     pageNum++;
-    //     pageRecord()
-    // }
-    // function prevBtn (){
-    //     pageNum--;
-    //     pageRecord()
-    // }
+    function nextBtn (){
+        pageNum++;
+        pageRecord()
+    }
+    function prevBtn (){
+        pageNum--;
+        pageRecord()
+    }
