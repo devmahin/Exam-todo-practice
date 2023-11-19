@@ -2,6 +2,7 @@ const inputText = document.getElementById("textinput")
 const btn = document.getElementById("btn")
 const btnText = btn.innerText
 const alltodo = document.getElementById("alltodo")
+const recordSize = document.getElementById("recordSize")
 let userArray = [];
 let edit = null;
 let objStr = localStorage.getItem("users")
@@ -84,7 +85,7 @@ searchInput.addEventListener("input", (e) => {
 ///pagination
 const paginationalltodo = document.querySelectorAll("#alltodo tr")
 
-let record_per_page = 5;
+let record_per_page = 10;
 let pageNum = 1;
 let total_record_length = paginationalltodo.length
 let total_page = Math.ceil(total_record_length / record_per_page)
@@ -94,11 +95,32 @@ pageRecord()
     function pageRecord(){
         let start_index = (pageNum - 1 ) * record_per_page;
         let end_index = start_index + (record_per_page - 1);
+        if(end_index >= total_record_length){
+            end_index = total_record_length - 1
+        }
         let stateMent = "";
-        for(i=start_index; i<= end_index; i++){
+        for(i=start_index; i <= end_index; i++){
             stateMent += `<tr>${paginationalltodo[i].innerHTML}</tr>`
         }
         alltodo.innerHTML = stateMent
+        document.querySelectorAll(".dynamic").forEach(item => {
+            item.classList.remove("active")
+        })
+        document.getElementById(`page${pageNum}`).classList.add("active")
+        
+        if(pageNum == 1){
+            document.querySelector("#prevBtn").classList.add("disabled")
+        }else{
+            document.querySelector("#prevBtn").classList.remove("disabled")
+        }
+        if(pageNum ==  total_page){
+            document.querySelector("#nextBtn").classList.add("disabled")
+        }
+        else{
+            document.querySelector("#nextBtn").classList.remove("disabled")
+
+        }
+        document.querySelector(".page_details").innerHTML = `Showing ${start_index+1} to ${end_index+1} of ${total_record_length}` 
     }
 
     function genaretPage (){
@@ -108,16 +130,19 @@ pageRecord()
         let activeClass = "";
         for(i = 1; i <= total_page; i++){
             
-            if(i =1){
+            if(i == 1){
                 activeClass  = "active";
             }else{
                 activeClass = "";
             }
-            buttons += `<li class="page-item ${activeClass}"><a class="page-link" href="#">${i}</a></li>`
+            
+            buttons += `<li class="page-item dynamic ${activeClass}" id="page${i}"><a class="page-link" href="#" onclick="page(${i})">${i}</a></li>`
         }
         const pagenation = document.querySelector("#pagenation")
+
         pagenation.innerHTML = `${prevBtn}, ${buttons}, ${nextBtn}`
     }
+
     function nextBtn (){
         pageNum++;
         pageRecord()
@@ -126,3 +151,14 @@ pageRecord()
         pageNum--;
         pageRecord()
     }
+    function page (index){
+        pageNum = +index
+        pageRecord()
+    }
+    recordSize.addEventListener("change", (e) => {
+        record_per_page = +recordSize.value
+        total_page = Math.ceil(total_record_length / record_per_page)
+        pageNum = 1
+        genaretPage()
+        pageRecord()
+    })
